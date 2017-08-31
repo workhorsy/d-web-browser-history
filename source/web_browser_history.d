@@ -7,16 +7,9 @@
 module WebBrowserHistory;
 
 
-import std.traits : isSomeString;
-
 pragma(lib, "sqlite3");
 import etc.c.sqlite3;
 
-public char* toSZ(S)(S value)
-if(isSomeString!S) {
-	import std.string : toStringz;
-	return cast(char*)toStringz(value);
-}
 
 enum WebBrowser {
 	Firefox,
@@ -127,6 +120,7 @@ void ReadHistory(WebBrowser browser, void delegate(string url, int visit_count) 
 	import std.stdio : stdout, stderr;
 	import std.file : exists, remove, copy;
 	import std.string : fromStringz;
+	import std.string : toStringz;
 
 	g_each_row_cb = each_row_cb;
 
@@ -158,7 +152,7 @@ void ReadHistory(WebBrowser browser, void delegate(string url, int visit_count) 
 		char* zErrMsg;
 
 		// Open the database
-		int rc = sqlite3_open(uri.toSZ, &db);
+		int rc = sqlite3_open(uri.toStringz, &db);
 		if (rc != SQLITE_OK) {
 			stderr.writefln("Can't open database: %s\n", cast(string) fromStringz(sqlite3_errmsg(db)));
 			sqlite3_close(db);
@@ -166,7 +160,7 @@ void ReadHistory(WebBrowser browser, void delegate(string url, int visit_count) 
 		}
 
 		// Read the database
-		rc = sqlite3_exec(db, sql_query.toSZ, &callback, cast(void*) 0, &zErrMsg);
+		rc = sqlite3_exec(db, sql_query.toStringz, &callback, cast(void*) 0, &zErrMsg);
 		if (rc != SQLITE_OK) {
 			stderr.writefln("SQL error: %s\n", cast(string) fromStringz(zErrMsg));
 			sqlite3_free(zErrMsg);
