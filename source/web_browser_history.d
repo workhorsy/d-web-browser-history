@@ -43,15 +43,30 @@ private extern (C) int callback(void* NotUsed, int argc, char** argv, char** azC
 }
 
 private string[] GetHistoryPaths(WebBrowser browser) {
-	final switch (browser) {
-		case WebBrowser.Firefox:
-			return GetHistoryPaths("places.sqlite", ["~/.mozilla/firefox/", "%APPDATA%/Mozilla/Firefox/"]);
-		case WebBrowser.Chrome:
-			return GetHistoryPaths("History", ["~/.config/google-chrome/", "%LOCALAPPDATA%/Google/Chrome/"]);
-		case WebBrowser.Chromium:
-			return GetHistoryPaths("History", ["~/.config/chromium/"]);
-		case WebBrowser.Opera:
-			return GetHistoryPaths("History", ["~/.config/opera/", "%APPDATA%/Opera Software/Opera Stable/"]);
+	version (unittest) {
+		final switch (browser) {
+			case WebBrowser.Firefox:
+				return GetHistoryPaths("firefox_history.sqlite", ["test_browser_data"]);
+			case WebBrowser.Chrome:
+				return GetHistoryPaths("chrome_history.sqlite", ["test_browser_data"]);
+			case WebBrowser.Chromium:
+				// FIXME: Add test history file for Chromium
+				return [];
+			case WebBrowser.Opera:
+				// FIXME: Add test history file for Opera
+				return [];
+		}
+	} else {
+		final switch (browser) {
+			case WebBrowser.Firefox:
+				return GetHistoryPaths("places.sqlite", ["~/.mozilla/firefox/", "%APPDATA%/Mozilla/Firefox/"]);
+			case WebBrowser.Chrome:
+				return GetHistoryPaths("History", ["~/.config/google-chrome/", "%LOCALAPPDATA%/Google/Chrome/"]);
+			case WebBrowser.Chromium:
+				return GetHistoryPaths("History", ["~/.config/chromium/"]);
+			case WebBrowser.Opera:
+				return GetHistoryPaths("History", ["~/.config/opera/", "%APPDATA%/Opera Software/Opera Stable/"]);
+		}
 	}
 }
 
@@ -191,15 +206,31 @@ unittest {
 			browsers.shouldEqual([
 				WebBrowser.Firefox,
 				WebBrowser.Chrome,
-				WebBrowser.Chromium,
 			]);
 		}),
-		it("Should read history", delegate() {
-			WebBrowserHistory.ReadHistoryAll(delegate(string url, int visit_count) {
-				//if (visit_count > g_web_history_all.get(url, 0)) {
-				//	g_web_history_all[url] = visit_count;
-				//}
+		it("Should get Chrome history", delegate() {
+			auto expected_urls = ["https://www.reddit.com/", "https://dlang.org/", "https://www.google.com/"];
+			auto expected_visits = [1, 3, 7];
+			string[] urls;
+			int[] visits;
+			WebBrowserHistory.ReadHistory(WebBrowser.Chrome, delegate(string url, int visit_count) {
+				urls ~= url;
+				visits ~= visit_count;
 			});
+			urls.shouldEqual(expected_urls);
+			visits.shouldEqual(expected_visits);
+		}),
+		it("Should get Firefox history", delegate() {
+			auto expected_urls = ["https://slashdot.org/", "https://dlang.org/"];
+			auto expected_visits = [8, 5];
+			string[] urls;
+			int[] visits;
+			WebBrowserHistory.ReadHistory(WebBrowser.Firefox, delegate(string url, int visit_count) {
+				urls ~= url;
+				visits ~= visit_count;
+			});
+			urls.shouldEqual(expected_urls);
+			visits.shouldEqual(expected_visits);
 		}),
 	);
 }
