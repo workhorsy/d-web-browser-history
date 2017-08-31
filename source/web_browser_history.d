@@ -6,8 +6,7 @@
 
 module WebBrowserHistory;
 
-import std.stdio : stdout, stderr;
-import std.conv : to;
+
 import std.traits : isSomeString;
 
 pragma(lib, "sqlite3");
@@ -34,6 +33,7 @@ private static string[] black_list = [
 ];
 
 private extern (C) int callback(void* NotUsed, int argc, char** argv, char** azColName) {
+	import std.conv : to;
 	import std.algorithm : any, count;
 	import std.string : fromStringz;
 
@@ -124,6 +124,7 @@ WebBrowser[] GetInstalledBrowsers() {
 }
 
 void ReadHistory(WebBrowser browser, void delegate(string url, int visit_count) each_row_cb) {
+	import std.stdio : stdout, stderr;
 	import std.file : exists, remove, copy;
 	import std.string : fromStringz;
 
