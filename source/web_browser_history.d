@@ -28,7 +28,7 @@ enum WebBrowser {
 
 private void delegate(string url, int visit_count) g_each_row_cb;
 
-static string[] black_list = [
+private static string[] black_list = [
 	"bank", "credit union", "bond", "invest", "hospital", "medical", "private",
 	"account"
 ];
@@ -89,7 +89,7 @@ private string[] GetHistoryPaths(string file_name, string[] settings_paths) {
 	return paths;
 }
 
-string ExpandPath(string path) {
+private string ExpandPath(string path) {
 	import std.process : environment;
 	import std.path : expandTilde;
 	import std.algorithm : count;
@@ -102,14 +102,6 @@ string ExpandPath(string path) {
 		}
 	}
 	return path;
-}
-
-void ReadHistoryAll(void delegate(string url, int visit_count) each_row_cb) {
-	import std.traits : EnumMembers;
-
-	foreach (browser ; EnumMembers!WebBrowser) {
-		ReadHistory(browser, each_row_cb);
-	}
 }
 
 WebBrowser[] GetInstalledBrowsers() {
@@ -187,3 +179,12 @@ void ReadHistory(WebBrowser browser, void delegate(string url, int visit_count) 
 		remove(uri);
 	}
 }
+
+void ReadHistoryAll(void delegate(string url, int visit_count) each_row_cb) {
+	import std.traits : EnumMembers;
+
+	foreach (browser ; EnumMembers!WebBrowser) {
+		ReadHistory(browser, each_row_cb);
+	}
+}
+
