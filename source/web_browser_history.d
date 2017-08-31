@@ -188,3 +188,23 @@ void ReadHistoryAll(void delegate(string url, int visit_count) each_row_cb) {
 	}
 }
 
+unittest {
+	import BDD;
+	describe("WebBrowserHistory",
+		it("Should get installed browsers", delegate() {
+			WebBrowser[] browsers = WebBrowserHistory.GetInstalledBrowsers();
+			browsers.shouldEqual([
+				WebBrowser.Firefox,
+				WebBrowser.Chrome,
+				WebBrowser.Chromium,
+			]);
+		}),
+		it("Should read history", delegate() {
+			WebBrowserHistory.ReadHistoryAll(delegate(string url, int visit_count) {
+				//if (visit_count > g_web_history_all.get(url, 0)) {
+				//	g_web_history_all[url] = visit_count;
+				//}
+			});
+		}),
+	);
+}
