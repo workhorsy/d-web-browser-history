@@ -50,11 +50,9 @@ private string[] GetHistoryPaths(WebBrowser browser) {
 			case WebBrowser.Chrome:
 				return GetHistoryPaths("chrome_history.sqlite", ["test_browser_data"]);
 			case WebBrowser.Chromium:
-				// FIXME: Add test history file for Chromium
-				return [];
+				return GetHistoryPaths("chromium_history.sqlite", ["test_browser_data"]);
 			case WebBrowser.Opera:
-				// FIXME: Add test history file for Opera
-				return [];
+				return GetHistoryPaths("opera_history.sqlite", ["test_browser_data"]);
 		}
 	} else {
 		final switch (browser) {
@@ -206,6 +204,8 @@ unittest {
 			browsers.shouldEqual([
 				WebBrowser.Firefox,
 				WebBrowser.Chrome,
+				WebBrowser.Chromium,
+				WebBrowser.Opera,
 			]);
 		}),
 		it("Should get Chrome history", delegate() {
@@ -226,6 +226,30 @@ unittest {
 			string[] urls;
 			int[] visits;
 			WebBrowserHistory.ReadHistory(WebBrowser.Firefox, delegate(string url, int visit_count) {
+				urls ~= url;
+				visits ~= visit_count;
+			});
+			urls.shouldEqual(expected_urls);
+			visits.shouldEqual(expected_visits);
+		}),
+		it("Should get Chromium history", delegate() {
+			auto expected_urls = ["https://twitter.com/", "https://www.debian.org/", "http://www.microsoft.com/"];
+			auto expected_visits = [5, 8, 2];
+			string[] urls;
+			int[] visits;
+			WebBrowserHistory.ReadHistory(WebBrowser.Chromium, delegate(string url, int visit_count) {
+				urls ~= url;
+				visits ~= visit_count;
+			});
+			urls.shouldEqual(expected_urls);
+			visits.shouldEqual(expected_visits);
+		}),
+		it("Should get Opera history", delegate() {
+			auto expected_urls = ["https://slashdot.org/", "https://microsoft.com/", "https://reddit.com/"];
+			auto expected_visits = [2, 4, 1];
+			string[] urls;
+			int[] visits;
+			WebBrowserHistory.ReadHistory(WebBrowser.Opera, delegate(string url, int visit_count) {
 				urls ~= url;
 				visits ~= visit_count;
 			});
