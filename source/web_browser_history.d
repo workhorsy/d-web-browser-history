@@ -16,6 +16,7 @@ enum WebBrowser {
 	Chrome,
 	Chromium,
 	Opera,
+	Brave,
 }
 
 private void delegate(string url, int visit_count) g_each_row_cb;
@@ -53,6 +54,8 @@ private string[] GetHistoryPaths(WebBrowser browser) {
 				return GetHistoryPaths("chromium_history.sqlite", ["test_browser_data"]);
 			case WebBrowser.Opera:
 				return GetHistoryPaths("opera_history.sqlite", ["test_browser_data"]);
+			case WebBrowser.Brave:
+				return GetHistoryPaths("brave_history.sqlite", ["test_browser_data"]);
 		}
 	} else {
 		final switch (browser) {
@@ -64,6 +67,8 @@ private string[] GetHistoryPaths(WebBrowser browser) {
 				return GetHistoryPaths("History", ["~/.config/chromium/"]);
 			case WebBrowser.Opera:
 				return GetHistoryPaths("History", ["~/.config/opera/", "%APPDATA%/Opera Software/Opera Stable/"]);
+			case WebBrowser.Brave:
+				return GetHistoryPaths("History", ["~/.config/brave/", "%APPDATA%/brave/"]);
 		}
 	}
 }
@@ -146,6 +151,7 @@ void ReadHistory(WebBrowser browser, void delegate(string url, int visit_count) 
 		case WebBrowser.Chrome:
 		case WebBrowser.Chromium:
 		case WebBrowser.Opera:
+		case WebBrowser.Brave:
 			sql_query = "select url, visit_count from urls where hidden=0;";
 			break;
 	}
@@ -206,6 +212,7 @@ unittest {
 				WebBrowser.Chrome,
 				WebBrowser.Chromium,
 				WebBrowser.Opera,
+				WebBrowser.Brave
 			]);
 		}),
 		it("Should get Chrome history", delegate() {
@@ -250,6 +257,18 @@ unittest {
 			string[] urls;
 			int[] visits;
 			WebBrowserHistory.ReadHistory(WebBrowser.Opera, delegate(string url, int visit_count) {
+				urls ~= url;
+				visits ~= visit_count;
+			});
+			urls.shouldEqual(expected_urls);
+			visits.shouldEqual(expected_visits);
+		}),
+		it("Should get Brave history", delegate() {
+			auto expected_urls = ["http://microsoft.com/", "https://twitter.com/", "https://github.com/"];
+			auto expected_visits = [1, 3, 8];
+			string[] urls;
+			int[] visits;
+			WebBrowserHistory.ReadHistory(WebBrowser.Brave, delegate(string url, int visit_count) {
 				urls ~= url;
 				visits ~= visit_count;
 			});
