@@ -3,12 +3,12 @@ Get web browser history with the D programming language
 
 # Documentation
 
-[https://workhorsy.github.io/d-web-browser-history/1.0.0/](https://workhorsy.github.io/d-web-browser-history/1.0.0/)
+[https://workhorsy.github.io/d-web-browser-history/$VERSION/](https://workhorsy.github.io/d-web-browser-history/$VERSION/)
 
 # Generate documentation
 
 ```
-dmd -c -D source/web_browser_history.d -Df=docs/1.0.0/index.html
+dmd -c -D source/web_browser_history.d -Df=docs/$VERSION/index.html
 ```
 
 # Run unit tests
