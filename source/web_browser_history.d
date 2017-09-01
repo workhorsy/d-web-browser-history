@@ -9,6 +9,8 @@ Get web browser history with the D programming language
 Home page:
 $(LINK https://github.com/workhorsy/d-web-browser-history)
 
+Version: 1.0.0
+
 License:
 Boost Software License - Version 1.0
 
@@ -33,14 +35,25 @@ pragma(lib, "sqlite3");
 import etc.c.sqlite3;
 
 /++
-The type of web browser to get history from.
-+/
+The supported web browsers.
+
+----
 enum WebBrowser {
-	Firefox,
+	Brave,
 	Chrome,
 	Chromium,
+	Firefox,
 	Opera,
+}
+----
++/
+
+enum WebBrowser {
 	Brave,
+	Chrome,
+	Chromium,
+	Firefox,
+	Opera,
 }
 
 private void delegate(string url, int visit_count) g_each_row_cb;
@@ -166,7 +179,7 @@ unittest {
 	WebBrowser[] browsers = WebBrowserHistory.GetInstalledBrowsers();
 
 	// browsers output
-	// [Firefox, Chrome, Chromium, Opera, Brave]
+	// [Brave, Chrome, Chromium, Firefox, Opera]
 }
 
 /++
@@ -278,11 +291,11 @@ unittest {
 		it("Should get installed browsers", delegate() {
 			WebBrowser[] browsers = WebBrowserHistory.GetInstalledBrowsers();
 			browsers.shouldEqual([
-				WebBrowser.Firefox,
+				WebBrowser.Brave,
 				WebBrowser.Chrome,
 				WebBrowser.Chromium,
+				WebBrowser.Firefox,
 				WebBrowser.Opera,
-				WebBrowser.Brave
 			]);
 		}),
 		it("Should get Chrome history", delegate() {
