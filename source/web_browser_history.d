@@ -3,6 +3,28 @@
 // Get web browser history with the D programming language
 // https://github.com/workhorsy/d-web-browser-history
 
+/++
+Get web browser history with the D programming language
+
+Home page:
+$(LINK https://github.com/workhorsy/d-web-browser-history)
+
+License:
+Boost Software License - Version 1.0
+
+Examples:
+----
+import WebBrowserHistory;
+import std.stdio : stdout;
+
+foreach (browser ; WebBrowserHistory.GetInstalledBrowsers()) {
+	WebBrowserHistory.ReadHistory(browser, delegate(string url, int visit_count) {
+		stdout.writefln("browser:%s, url:%s, count:%s", browser, url, visit_count);
+	});
+}
+----
++/
+
 
 module WebBrowserHistory;
 
@@ -10,7 +32,9 @@ module WebBrowserHistory;
 pragma(lib, "sqlite3");
 import etc.c.sqlite3;
 
-
+/++
+The type of web browser to get history from.
++/
 enum WebBrowser {
 	Firefox,
 	Chrome,
@@ -115,6 +139,9 @@ private string ExpandPath(string path) {
 	return path;
 }
 
+/++
+Returns an array of installed web browsers.
++/
 WebBrowser[] GetInstalledBrowsers() {
 	import std.traits : EnumMembers;
 
@@ -134,6 +161,21 @@ WebBrowser[] GetInstalledBrowsers() {
 	return browsers;
 }
 
+///
+unittest {
+	WebBrowser[] browsers = WebBrowserHistory.GetInstalledBrowsers();
+
+	// browsers output
+	// [Firefox, Chrome, Chromium, Opera, Brave]
+}
+
+/++
+Reads all the history for the selected web browser.
+
+Params:
+ browser = The web browser to search
+ each_row_cb = The callback to fire for each row in the history.
++/
 void ReadHistory(WebBrowser browser, void delegate(string url, int visit_count) each_row_cb) {
 	import std.stdio : stdout, stderr;
 	import std.file : exists, remove, copy;
@@ -194,12 +236,40 @@ void ReadHistory(WebBrowser browser, void delegate(string url, int visit_count) 
 	}
 }
 
+///
+unittest {
+	int[string] data;
+	WebBrowserHistory.ReadHistory(WebBrowser.Chrome, delegate(string url, int visit_count) {
+		data[url] = visit_count;
+	});
+
+	// data output
+	// ["https://dlang.org/":3, "https://www.google.com/":7, "https://www.reddit.com/":1]
+}
+
+/++
+Reads all the history for all the web browsers.
+
+Params:
+ each_row_cb = The callback to fire for each row in the history.
++/
 void ReadHistoryAll(void delegate(string url, int visit_count) each_row_cb) {
 	import std.traits : EnumMembers;
 
 	foreach (browser ; EnumMembers!WebBrowser) {
 		ReadHistory(browser, each_row_cb);
 	}
+}
+
+///
+unittest {
+	int[string] data;
+	WebBrowserHistory.ReadHistoryAll(delegate(string url, int visit_count) {
+		data[url] = visit_count;
+	});
+
+	// data output
+	// ["https://dlang.org/":3, "https://www.google.com/":7, "https://www.reddit.com/":1, "https://slashdot.org/":7]
 }
 
 unittest {
@@ -277,3 +347,4 @@ unittest {
 		}),
 	);
 }
+
