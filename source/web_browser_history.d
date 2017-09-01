@@ -19,8 +19,8 @@ Examples:
 import WebBrowserHistory;
 import std.stdio : stdout;
 
-foreach (browser ; WebBrowserHistory.GetInstalledBrowsers()) {
-	WebBrowserHistory.ReadHistory(browser, delegate(string url, int visit_count) {
+foreach (browser ; WebBrowserHistory.getInstalledBrowsers()) {
+	WebBrowserHistory.readHistory(browser, delegate(string url, int visit_count) {
 		stdout.writefln("browser:%s, url:%s, count:%s", browser, url, visit_count);
 	});
 }
@@ -80,43 +80,43 @@ private extern (C) int callback(void* NotUsed, int argc, char** argv, char** azC
 	return 0;
 }
 
-private string[] GetHistoryPaths(WebBrowser browser) {
+private string[] getHistoryPaths(WebBrowser browser) {
 	version (unittest) {
 		final switch (browser) {
 			case WebBrowser.Firefox:
-				return GetHistoryPaths("firefox_history.sqlite", ["test_browser_data"]);
+				return getHistoryPaths("firefox_history.sqlite", ["test_browser_data"]);
 			case WebBrowser.Chrome:
-				return GetHistoryPaths("chrome_history.sqlite", ["test_browser_data"]);
+				return getHistoryPaths("chrome_history.sqlite", ["test_browser_data"]);
 			case WebBrowser.Chromium:
-				return GetHistoryPaths("chromium_history.sqlite", ["test_browser_data"]);
+				return getHistoryPaths("chromium_history.sqlite", ["test_browser_data"]);
 			case WebBrowser.Opera:
-				return GetHistoryPaths("opera_history.sqlite", ["test_browser_data"]);
+				return getHistoryPaths("opera_history.sqlite", ["test_browser_data"]);
 			case WebBrowser.Brave:
-				return GetHistoryPaths("brave_history.sqlite", ["test_browser_data"]);
+				return getHistoryPaths("brave_history.sqlite", ["test_browser_data"]);
 		}
 	} else {
 		final switch (browser) {
 			case WebBrowser.Firefox:
-				return GetHistoryPaths("places.sqlite", ["~/.mozilla/firefox/", "%APPDATA%/Mozilla/Firefox/"]);
+				return getHistoryPaths("places.sqlite", ["~/.mozilla/firefox/", "%APPDATA%/Mozilla/Firefox/"]);
 			case WebBrowser.Chrome:
-				return GetHistoryPaths("History", ["~/.config/google-chrome/", "%LOCALAPPDATA%/Google/Chrome/"]);
+				return getHistoryPaths("History", ["~/.config/google-chrome/", "%LOCALAPPDATA%/Google/Chrome/"]);
 			case WebBrowser.Chromium:
-				return GetHistoryPaths("History", ["~/.config/chromium/"]);
+				return getHistoryPaths("History", ["~/.config/chromium/"]);
 			case WebBrowser.Opera:
-				return GetHistoryPaths("History", ["~/.config/opera/", "%APPDATA%/Opera Software/Opera Stable/"]);
+				return getHistoryPaths("History", ["~/.config/opera/", "%APPDATA%/Opera Software/Opera Stable/"]);
 			case WebBrowser.Brave:
-				return GetHistoryPaths("History", ["~/.config/brave/", "%APPDATA%/brave/"]);
+				return getHistoryPaths("History", ["~/.config/brave/", "%APPDATA%/brave/"]);
 		}
 	}
 }
 
-private string[] GetHistoryPaths(string file_name, string[] settings_paths) {
+private string[] getHistoryPaths(string file_name, string[] settings_paths) {
 	import std.file : exists, DirIterator, dirEntries, FileException;
 	import std.path : baseName, SpanMode;
 
 	string[] paths;
 	foreach (settings_path; settings_paths) {
-		string full_path = ExpandPath(settings_path);
+		string full_path = expandPath(settings_path);
 
 		if (! exists(full_path)) {
 			continue;
@@ -137,7 +137,7 @@ private string[] GetHistoryPaths(string file_name, string[] settings_paths) {
 	return paths;
 }
 
-private string ExpandPath(string path) {
+private string expandPath(string path) {
 	import std.process : environment;
 	import std.path : expandTilde;
 	import std.algorithm : count;
@@ -155,13 +155,13 @@ private string ExpandPath(string path) {
 /++
 Returns an array of installed web browsers.
 +/
-WebBrowser[] GetInstalledBrowsers() {
+WebBrowser[] getInstalledBrowsers() {
 	import std.traits : EnumMembers;
 
 	// Get the installed browsers
 	WebBrowser[] browsers;
 	foreach (browser ; EnumMembers!WebBrowser) {
-		if (GetHistoryPaths(browser).length > 0) {
+		if (getHistoryPaths(browser).length > 0) {
 			browsers ~= browser;
 		}
 	}
@@ -176,7 +176,7 @@ WebBrowser[] GetInstalledBrowsers() {
 
 ///
 unittest {
-	WebBrowser[] browsers = WebBrowserHistory.GetInstalledBrowsers();
+	WebBrowser[] browsers = WebBrowserHistory.getInstalledBrowsers();
 
 	// browsers output
 	// [Brave, Chrome, Chromium, Firefox, Opera]
@@ -189,7 +189,7 @@ Params:
  browser = The web browser to search
  each_row_cb = The callback to fire for each row in the history.
 +/
-void ReadHistory(WebBrowser browser, void delegate(string url, int visit_count) each_row_cb) {
+void readHistory(WebBrowser browser, void delegate(string url, int visit_count) each_row_cb) {
 	import std.stdio : stdout, stderr;
 	import std.file : exists, remove, copy;
 	import std.string : fromStringz;
@@ -197,7 +197,7 @@ void ReadHistory(WebBrowser browser, void delegate(string url, int visit_count) 
 
 	g_each_row_cb = each_row_cb;
 
-	string[] paths = GetHistoryPaths(browser);
+	string[] paths = getHistoryPaths(browser);
 	string sql_query;
 	final switch (browser) {
 		case WebBrowser.Firefox:
@@ -252,7 +252,7 @@ void ReadHistory(WebBrowser browser, void delegate(string url, int visit_count) 
 ///
 unittest {
 	int[string] data;
-	WebBrowserHistory.ReadHistory(WebBrowser.Chrome, delegate(string url, int visit_count) {
+	WebBrowserHistory.readHistory(WebBrowser.Chrome, delegate(string url, int visit_count) {
 		data[url] = visit_count;
 	});
 
@@ -266,18 +266,18 @@ Reads all the history for all the web browsers.
 Params:
  each_row_cb = The callback to fire for each row in the history.
 +/
-void ReadHistoryAll(void delegate(string url, int visit_count) each_row_cb) {
+void readHistoryAll(void delegate(string url, int visit_count) each_row_cb) {
 	import std.traits : EnumMembers;
 
 	foreach (browser ; EnumMembers!WebBrowser) {
-		ReadHistory(browser, each_row_cb);
+		readHistory(browser, each_row_cb);
 	}
 }
 
 ///
 unittest {
 	int[string] data;
-	WebBrowserHistory.ReadHistoryAll(delegate(string url, int visit_count) {
+	WebBrowserHistory.readHistoryAll(delegate(string url, int visit_count) {
 		data[url] = visit_count;
 	});
 
@@ -289,7 +289,7 @@ unittest {
 	import BDD;
 	describe("WebBrowserHistory",
 		it("Should get installed browsers", delegate() {
-			WebBrowser[] browsers = WebBrowserHistory.GetInstalledBrowsers();
+			WebBrowser[] browsers = WebBrowserHistory.getInstalledBrowsers();
 			browsers.shouldEqual([
 				WebBrowser.Brave,
 				WebBrowser.Chrome,
@@ -303,7 +303,7 @@ unittest {
 			auto expected_visits = [1, 3, 7];
 			string[] urls;
 			int[] visits;
-			WebBrowserHistory.ReadHistory(WebBrowser.Chrome, delegate(string url, int visit_count) {
+			WebBrowserHistory.readHistory(WebBrowser.Chrome, delegate(string url, int visit_count) {
 				urls ~= url;
 				visits ~= visit_count;
 			});
@@ -315,7 +315,7 @@ unittest {
 			auto expected_visits = [8, 5];
 			string[] urls;
 			int[] visits;
-			WebBrowserHistory.ReadHistory(WebBrowser.Firefox, delegate(string url, int visit_count) {
+			WebBrowserHistory.readHistory(WebBrowser.Firefox, delegate(string url, int visit_count) {
 				urls ~= url;
 				visits ~= visit_count;
 			});
@@ -327,7 +327,7 @@ unittest {
 			auto expected_visits = [5, 8, 2];
 			string[] urls;
 			int[] visits;
-			WebBrowserHistory.ReadHistory(WebBrowser.Chromium, delegate(string url, int visit_count) {
+			WebBrowserHistory.readHistory(WebBrowser.Chromium, delegate(string url, int visit_count) {
 				urls ~= url;
 				visits ~= visit_count;
 			});
@@ -339,7 +339,7 @@ unittest {
 			auto expected_visits = [2, 4, 1];
 			string[] urls;
 			int[] visits;
-			WebBrowserHistory.ReadHistory(WebBrowser.Opera, delegate(string url, int visit_count) {
+			WebBrowserHistory.readHistory(WebBrowser.Opera, delegate(string url, int visit_count) {
 				urls ~= url;
 				visits ~= visit_count;
 			});
@@ -351,7 +351,7 @@ unittest {
 			auto expected_visits = [1, 3, 8];
 			string[] urls;
 			int[] visits;
-			WebBrowserHistory.ReadHistory(WebBrowser.Brave, delegate(string url, int visit_count) {
+			WebBrowserHistory.readHistory(WebBrowser.Brave, delegate(string url, int visit_count) {
 				urls ~= url;
 				visits ~= visit_count;
 			});
