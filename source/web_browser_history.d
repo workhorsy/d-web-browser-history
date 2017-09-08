@@ -16,11 +16,11 @@ Boost Software License - Version 1.0
 
 Examples:
 ----
-import WebBrowserHistory;
+import web_browser_history;
 import std.stdio : stdout;
 
-foreach (browser ; WebBrowserHistory.getInstalledBrowsers()) {
-	WebBrowserHistory.readHistory(browser, delegate(string url, int visit_count) {
+foreach (browser ; web_browser_history.getInstalledBrowsers()) {
+	web_browser_history.readHistory(browser, delegate(string url, int visit_count) {
 		stdout.writefln("browser:%s, url:%s, count:%s", browser, url, visit_count);
 	});
 }
@@ -28,7 +28,7 @@ foreach (browser ; WebBrowserHistory.getInstalledBrowsers()) {
 +/
 
 
-module WebBrowserHistory;
+module web_browser_history;
 
 
 pragma(lib, "sqlite3");
@@ -176,7 +176,7 @@ WebBrowser[] getInstalledBrowsers() {
 
 ///
 unittest {
-	WebBrowser[] browsers = WebBrowserHistory.getInstalledBrowsers();
+	WebBrowser[] browsers = web_browser_history.getInstalledBrowsers();
 
 	// browsers output
 	// [Brave, Chrome, Chromium, Firefox, Opera]
@@ -252,7 +252,7 @@ void readHistory(WebBrowser browser, void delegate(string url, int visit_count) 
 ///
 unittest {
 	int[string] data;
-	WebBrowserHistory.readHistory(WebBrowser.Chrome, delegate(string url, int visit_count) {
+	web_browser_history.readHistory(WebBrowser.Chrome, delegate(string url, int visit_count) {
 		data[url] = visit_count;
 	});
 
@@ -277,7 +277,7 @@ void readHistoryAll(void delegate(string url, int visit_count) each_row_cb) {
 ///
 unittest {
 	int[string] data;
-	WebBrowserHistory.readHistoryAll(delegate(string url, int visit_count) {
+	web_browser_history.readHistoryAll(delegate(string url, int visit_count) {
 		data[url] = visit_count;
 	});
 
@@ -287,9 +287,9 @@ unittest {
 
 unittest {
 	import BDD;
-	describe("WebBrowserHistory",
+	describe("web_browser_history",
 		it("Should get installed browsers", delegate() {
-			WebBrowser[] browsers = WebBrowserHistory.getInstalledBrowsers();
+			WebBrowser[] browsers = web_browser_history.getInstalledBrowsers();
 			browsers.shouldEqual([
 				WebBrowser.Brave,
 				WebBrowser.Chrome,
@@ -303,7 +303,7 @@ unittest {
 			auto expected_visits = [1, 3, 7];
 			string[] urls;
 			int[] visits;
-			WebBrowserHistory.readHistory(WebBrowser.Chrome, delegate(string url, int visit_count) {
+			web_browser_history.readHistory(WebBrowser.Chrome, delegate(string url, int visit_count) {
 				urls ~= url;
 				visits ~= visit_count;
 			});
@@ -315,7 +315,7 @@ unittest {
 			auto expected_visits = [8, 5];
 			string[] urls;
 			int[] visits;
-			WebBrowserHistory.readHistory(WebBrowser.Firefox, delegate(string url, int visit_count) {
+			web_browser_history.readHistory(WebBrowser.Firefox, delegate(string url, int visit_count) {
 				urls ~= url;
 				visits ~= visit_count;
 			});
@@ -327,7 +327,7 @@ unittest {
 			auto expected_visits = [5, 8, 2];
 			string[] urls;
 			int[] visits;
-			WebBrowserHistory.readHistory(WebBrowser.Chromium, delegate(string url, int visit_count) {
+			web_browser_history.readHistory(WebBrowser.Chromium, delegate(string url, int visit_count) {
 				urls ~= url;
 				visits ~= visit_count;
 			});
@@ -339,7 +339,7 @@ unittest {
 			auto expected_visits = [2, 4, 1];
 			string[] urls;
 			int[] visits;
-			WebBrowserHistory.readHistory(WebBrowser.Opera, delegate(string url, int visit_count) {
+			web_browser_history.readHistory(WebBrowser.Opera, delegate(string url, int visit_count) {
 				urls ~= url;
 				visits ~= visit_count;
 			});
@@ -351,7 +351,7 @@ unittest {
 			auto expected_visits = [1, 3, 8];
 			string[] urls;
 			int[] visits;
-			WebBrowserHistory.readHistory(WebBrowser.Brave, delegate(string url, int visit_count) {
+			web_browser_history.readHistory(WebBrowser.Brave, delegate(string url, int visit_count) {
 				urls ~= url;
 				visits ~= visit_count;
 			});
