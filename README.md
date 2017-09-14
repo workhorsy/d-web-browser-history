@@ -8,7 +8,7 @@ Get web browser history with the D programming language
 # Generate documentation
 
 ```
-dmd -c -D source/web_browser_history.d -Df=docs/1.1.0/index.html
+dub --build=docs
 ```
 
 # Run unit tests
