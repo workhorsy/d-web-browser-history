@@ -14,7 +14,7 @@ dmd -c -D source/web_browser_history.d -Df=docs/1.1.0/index.html
 # Run unit tests
 
 ```
-dub test --main-file=test/main.d
+dub test
 ```
 
 [![Dub version](https://img.shields.io/dub/v/d-web-browser-history.svg)](https://code.dlang.org/packages/d-web-browser-history)
