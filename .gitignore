@@ -3,3 +3,6 @@ dub.selections.json
 lib/
 *.o
 *.obj
+
+examples/example
+examples/example.exe
