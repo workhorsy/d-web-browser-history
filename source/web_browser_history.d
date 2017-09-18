@@ -18,6 +18,9 @@ Examples:
 ----
 import web_browser_history;
 import std.stdio : stdout;
+import derelict.sqlite3.sqlite : DerelictSQLite3;
+
+DerelictSQLite3.load();
 
 foreach (browser ; web_browser_history.getInstalledBrowsers()) {
 	web_browser_history.readHistory(browser, delegate(string url, int visit_count) {
