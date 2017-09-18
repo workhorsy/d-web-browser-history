@@ -3,7 +3,7 @@ Get web browser history with the D programming language
 
 # Documentation
 
-[https://workhorsy.github.io/d-web-browser-history/1.1.0/](https://workhorsy.github.io/d-web-browser-history/1.1.0/)
+[https://workhorsy.github.io/d-web-browser-history/1.2.0/](https://workhorsy.github.io/d-web-browser-history/1.2.0/)
 
 # Generate documentation
 
