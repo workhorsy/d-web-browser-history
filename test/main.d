@@ -4,6 +4,9 @@ import BDD;
 
 unittest {
 	import web_browser_history;
+	import derelict.sqlite3.sqlite : DerelictSQLite3;
+
+	DerelictSQLite3.load();
 
 	describe("web_browser_history",
 		it("Should get installed browsers", delegate() {

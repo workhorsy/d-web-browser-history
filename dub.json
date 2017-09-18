@@ -16,7 +16,7 @@
 			"targetName": "web_browser_history",
 			"targetType": "staticLibrary",
 			"dependencies": {
-				"db": "~>0.9.1",
+				"unofficial-derelict-sqlite3": "~>0.1.0"
 			},
 		},
 		{
@@ -26,7 +26,7 @@
 			"mainSourceFile": "test/main.d",
 			"dependencies": {
 				"bdd": "~>1.3.0",
-				"db": "~>0.9.1",
+				"unofficial-derelict-sqlite3": "~>0.1.0"
 			},
 		},
 	],

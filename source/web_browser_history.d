@@ -30,9 +30,7 @@ foreach (browser ; web_browser_history.getInstalledBrowsers()) {
 
 module web_browser_history;
 
-
-pragma(lib, "sqlite3");
-import etc.c.sqlite3;
+import derelict.sqlite3.sqlite;
 
 /++
 The supported web browsers.
@@ -176,6 +174,8 @@ WebBrowser[] getInstalledBrowsers() {
 
 ///
 unittest {
+	import derelict.sqlite3.sqlite : DerelictSQLite3;
+	DerelictSQLite3.load();
 	WebBrowser[] browsers = web_browser_history.getInstalledBrowsers();
 
 	// browsers output
@@ -251,6 +251,9 @@ void readHistory(WebBrowser browser, void delegate(string url, int visit_count) 
 
 ///
 unittest {
+	import derelict.sqlite3.sqlite : DerelictSQLite3;
+	DerelictSQLite3.load();
+
 	int[string] data;
 	web_browser_history.readHistory(WebBrowser.Chrome, delegate(string url, int visit_count) {
 		data[url] = visit_count;
@@ -276,6 +279,9 @@ void readHistoryAll(void delegate(string url, int visit_count) each_row_cb) {
 
 ///
 unittest {
+	import derelict.sqlite3.sqlite : DerelictSQLite3;
+	DerelictSQLite3.load();
+
 	int[string] data;
 	web_browser_history.readHistoryAll(delegate(string url, int visit_count) {
 		data[url] = visit_count;
