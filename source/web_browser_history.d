@@ -112,8 +112,8 @@ private string[] getHistoryPaths(WebBrowser browser) {
 }
 
 private string[] getHistoryPaths(string file_name, string[] settings_paths) {
-	import std.file : exists, DirIterator, dirEntries, FileException;
-	import std.path : baseName, SpanMode;
+	import std.file : exists, DirIterator, dirEntries, SpanMode, FileException;
+	import std.path : baseName;
 
 	string[] paths;
 	foreach (settings_path; settings_paths) {
@@ -293,6 +293,3 @@ unittest {
 	// data output
 	// ["https://dlang.org/":3, "https://www.google.com/":7, "https://www.reddit.com/":1, "https://slashdot.org/":7]
 }
-
-
-
