@@ -67,15 +67,20 @@ private static string[] black_list = [
 private extern (C) int callback(void* NotUsed, int argc, char** argv, char** azColName) {
 	import std.conv : to;
 	import std.algorithm : any, count;
-	import std.string : fromStringz;
+	import std.string : fromStringz, chomp;
 
-	string url = (cast(string) fromStringz(argv[0] ? argv[0] : "NULL")).dup;
+	string url = (cast(string) fromStringz(argv[0] ? argv[0] : "NULL")).dup.chomp;
 	auto visit_count = cast(string) fromStringz(argv[1] ? argv[1] : "0");
 	int total = to!int(visit_count);
 
 	bool is_black_listed = black_list.any!(entry => url.count(entry) > 0);
 
 	if (! is_black_listed) {
+
+		import std.stdio;
+		//foreach (n; url)
+		//	stdout.writefln("!!! url: [%s]", n);
+
 		g_each_row_cb(url, total);
 	}
 	return 0;
@@ -114,10 +119,13 @@ private string[] getHistoryPaths(WebBrowser browser) {
 private string[] getHistoryPaths(string file_name, string[] settings_paths) {
 	import std.file : exists, DirIterator, dirEntries, SpanMode, FileException;
 	import std.path : baseName;
+	import std.string : replace;
 
 	string[] paths;
 	foreach (settings_path; settings_paths) {
 		string full_path = expandPath(settings_path);
+		//import std.stdio;
+		//stdout.writefln("!!! full_path: %s, settings_path: %s", full_path, settings_path); stdout.flush();
 
 		if (! exists(full_path)) {
 			continue;
@@ -127,6 +135,11 @@ private string[] getHistoryPaths(string file_name, string[] settings_paths) {
 			DirIterator iter = dirEntries(full_path, SpanMode.breadth, true);
 			foreach (string path; iter) {
 				if (baseName(path) == file_name) {
+					version (Windows) {
+						path = path.replace("/", "\\");
+					} else {
+						path = path.replace(`\`, "/").replace("\'", "/");
+					}
 					paths ~= path;
 				}
 			}
