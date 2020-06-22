@@ -1,3 +1,5 @@
+* Release 2.0.0
+	* Fixed Bug #6: Make tests run without main for changes in dmd 2.090
 
 9/17/2017 Release 1.2.0
 	* Fixed Bug #1: Only require BDD for running tests
