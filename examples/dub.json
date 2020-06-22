@@ -5,6 +5,6 @@
 	"mainSourceFile": "example.d",
 
 	"dependencies": {
-		"unofficial-derelict-sqlite3": "~>0.1.0"
+		"unofficial-derelict-sqlite3": "~>0.3.0"
 	}
 }
