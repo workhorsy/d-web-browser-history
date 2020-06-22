@@ -1,8 +1,8 @@
 
 
-import BDD;
 
 unittest {
+	import BDD;
 	import web_browser_history;
 	import derelict.sqlite3.sqlite : DerelictSQLite3;
 
@@ -80,8 +80,4 @@ unittest {
 			visits.shouldEqual(expected_visits);
 		}),
 	);
-}
-
-int main() {
-	return BDD.printResults();
 }
