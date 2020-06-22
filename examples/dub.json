@@ -1,10 +1,10 @@
 {
 	"name": "example",
 	"targetType": "executable",
-	"sourceFiles": ["../source/web_browser_history.d"],
 	"mainSourceFile": "example.d",
 
 	"dependencies": {
-		"unofficial-derelict-sqlite3": "~>0.3.0"
+		"unofficial-derelict-sqlite3": "~>0.3.0",
+		"d-web-browser-history": {"path": ".."}
 	}
 }
