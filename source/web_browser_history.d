@@ -9,7 +9,7 @@ Get web browser history with the D programming language
 Home page:
 $(LINK https://github.com/workhorsy/d-web-browser-history)
 
-Version: 1.2.0
+Version: 2.0.0
 
 License:
 Boost Software License - Version 1.0
